@@ -77,9 +77,6 @@ export class ConfigService {
                         this.thisApi = body.api
 
                         console.log(this.thisApi.data.bddConfig);
-
-
-                        await this.closePrevious();
                         resolve(this.thisApi);
                     }
                     console.log('Erreur recup CONFIG -> Vérifier API SYSTEM err=>' + body)
@@ -116,11 +113,6 @@ export class ConfigService {
                             data: { bddConfig: environment.bddConfig }
                         }
 
-
-
-
-
-                        await this.closePrevious();
                         resolve(this.thisApi);
                         return
                     }
@@ -137,29 +129,6 @@ export class ConfigService {
         })
     }
 
-    async closePrevious(port: number = this.thisApi.port) {
-        console.log("close Previous port -> ", port)
-
-        return new Promise((resolve, reject) => {
-            if (environment.production) {
-
-                exec('kill-port ' + port, (err, stdout, stderr) => {
-                    console.log('err', err, 'stdout', stdout, ' stderr', stderr)
-
-                    if (err) {
-                        console.log(err)
-                        reject(err)
-                        return;
-                    }
-                    resolve(stdout)
-                })
-                return
-            }
-
-            resolve(null)
-
-
-        })
-    }
+   
 
 }

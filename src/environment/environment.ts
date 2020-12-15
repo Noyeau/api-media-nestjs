@@ -1,7 +1,7 @@
 
 
 export const environment: any = {
-    production: false,
+    production: true,
     apiCode:"medias",
     bddConfig: {
         type: 'mysql',
@@ -13,6 +13,6 @@ export const environment: any = {
         entities: ["dist/**/*.entity{.ts,.js}"],
         synchronize: true,
     },
-    apiSystem:'http://localhost:1899',
+    apiSystem:'http://192.168.1.15:1899',
     apiKeyCode:'appNoyeau',
 };
