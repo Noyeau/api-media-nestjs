@@ -122,6 +122,10 @@ export class TranscodeService {
     }
 
     transcodeVideo(originalPath, destinationPath, size: number = 360, thumPath = null): Promise<string> {
+
+
+        console.log('-------------------Transcode -> '+ originalPath +' -Size- '+size);
+
         return new Promise((resolve) => {
             try {
                 var process = new ffmpeg(originalPath);
@@ -171,10 +175,14 @@ export class TranscodeService {
 
 
                 }, (err) => {
+                    console.log('-------------------Plantage 1111');
+
                     console.log('Error: ' + err);
                     resolve(null)
                 });
             } catch (e) {
+                console.log('-------------------Plantage 2222');
+
                 console.log(e.code);
                 console.log(e.msg);
                 resolve(null)
