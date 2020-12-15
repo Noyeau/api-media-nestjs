@@ -56,13 +56,13 @@ export class FilesService {
 
 
 
-    public async addOne(file, name, zone, context: any): Promise<UserFile[]> {
-        return new Promise<UserFile[]>((resolve, reject) => {
-            let newFile = new UserFile()
-            newFile.userId = context.request['user'].id
-            resolve(newFile.upload(file, name, zone))
-        })
-    }
+    // public async addOne(file, name, zone, context: any): Promise<UserFile[]> {
+    //     return new Promise<UserFile[]>((resolve, reject) => {
+    //         let newFile = new UserFile()
+    //         newFile.userId = context.request['user'].id
+    //         resolve(newFile.upload(file, name, zone))
+    //     })
+    // }
 
     public async genereName(): Promise<any> {
         return new Promise(async (resolve, reject) => {

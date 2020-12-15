@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-const sharp = require('sharp');
 
 const ffmpeg = require('ffmpeg');
 

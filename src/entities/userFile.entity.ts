@@ -6,8 +6,7 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 var fs = require('fs');
-const sharp = require('sharp');
-const { exec } = require('child_process');
+
 
 @Entity()
 export class UserFile {
@@ -18,40 +17,35 @@ export class UserFile {
         }
      }
 
-    async upload(file = null, name = null, zone = null, createFile: boolean = false): Promise<any> {
-        return new Promise(async resolve => {
-            if (!file || !name) {
-                return resolve({ err: "noFile" })
-            } else {
-                console.log(file.originalname + "=>" + name, zone)
-                this.originalName = file.originalname
+    // async upload(file = null, name = null, zone = null, createFile: boolean = false): Promise<any> {
+    //     return new Promise(async resolve => {
+    //         if (!file || !name) {
+    //             return resolve({ err: "noFile" })
+    //         } else {
+    //             console.log(file.originalname + "=>" + name, zone)
+    //             this.originalName = file.originalname
 
-                this.nameConstructor(file, name)
-                this.zone = zone;
+    //             this.nameConstructor(file, name)
+    //             this.zone = zone;
 
-                if (createFile) {
-                    fs.writeFile('./public/groups/original/' + this.name, Buffer.from(file.buffer), async (fileOk) => {
-                        if (fileOk) {
-                            console.log(fileOk)
-                            resolve({ error: "error file Save" })
-                        }
+    //             if (createFile) {
+    //                 fs.writeFile('./public/groups/original/' + this.name, Buffer.from(file.buffer), async (fileOk) => {
+    //                     if (fileOk) {
+    //                         console.log(fileOk)
+    //                         resolve({ error: "error file Save" })
+    //                     }
 
-                        resolve(await this.save())
-                        console.log('ca a marché')
-                    })
-                } else {
-                    resolve(await this.save())
-                }
-                if (this.type.includes('image')) {
-                    this.transcodeImage()
-                } else if (this.type.includes('video')) {
-                    this.transcodeVideo()
-                }
+    //                     resolve(await this.save())
+    //                     console.log('ca a marché')
+    //                 })
+    //             } else {
+    //                 resolve(await this.save())
+    //             }
 
-            }
-        })
+    //         }
+    //     })
 
-    }
+    // }
 
     // private nameTmp: string;
     // private needTranscode: string;
@@ -150,57 +144,9 @@ export class UserFile {
         return './public/groups/300/' + this.name
     }
 
-    transcodeImage() {
-        sharp('./public/groups/original/' + this.name)
-            .resize(1200)
-            .toFile('./public/groups/1200/' + this.name, (err, info) => {
-                if (err) console.log('thumb1200 error', err);
-                else console.log('thumb1200 complete');
-            })
-            .resize(600)
-            .toFile('./public/groups/600/' + this.name, (err, info) => {
-                if (err) console.log('thumb600 error', err);
-                else console.log('thumb600 complete');
-            })
-            .resize(300)
-            .toFile('./public/groups/300/' + this.name, (err, info) => {
-                if (err) console.log('thumb300 error', err);
-                else console.log('thumb300 complete');
-            });
-    }
+    
 
-    transcodeVideo() {
-
-        let nameTmp = this.name.split('.')[0]
-
-        exec('ffmpeg -i "./public/groups/original/' + this.name + '" -vf scale="320:-2" "./public/groups/videoMini/' + nameTmp + '.mp4"', (err, stdout, stderr) => {
-            if (err) {
-                console.log(err)
-
-                // node couldn't execute the command
-                return;
-            }
-            //On cré une Frame
-            exec('ffmpeg -i "./public/groups/original/' + this.name + '" -ss 00:00:01 -vframes 1 "./public/groups/300/' + nameTmp + '.jpg"', (err, stdout, stderr) => {
-                if (err) {
-                    console.log(err)
-                    console.log('ffmpeg -i "./public/groups/original/' + this.name + '" -ss 00:00:10 -vframes 1 "./public/groups/300/' + nameTmp + '.jpg"');
-
-                    // node couldn't execute the command
-                    return;
-                }
-
-
-                // the *entire* stdout and stderr (buffered)
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
-            });
-            // the *entire* stdout and stderr (buffered)
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
-        });
-    }
-
+    
 
 
 
