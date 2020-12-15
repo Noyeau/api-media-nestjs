@@ -1,7 +1,7 @@
 
 
 export const environment: any = {
-    production: true,
+    production: false,
     apiCode:"medias",
     bddConfig: {
         type: 'mysql',
