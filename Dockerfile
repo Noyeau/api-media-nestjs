@@ -6,7 +6,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:12-alpine
+FROM rickydunlop/nodejs-ffmpeg
 WORKDIR /app
 COPY --from=builder /app ./
 CMD ["npm", "run", "start:prod"]
