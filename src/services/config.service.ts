@@ -78,6 +78,7 @@ export class ConfigService {
 
                         console.log(this.thisApi.data.bddConfig);
                         resolve(this.thisApi);
+                        return
                     }
                     console.log('Erreur recup CONFIG -> Vérifier API SYSTEM err=>' + body)
                     reject(error)
