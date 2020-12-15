@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-
+const fs = require('fs');
+const resizeImg = require('resize-img');
 const ffmpeg = require('ffmpeg');
 
 @Injectable()
@@ -10,39 +11,47 @@ export class TranscodeService {
 
 
     resizeImage(originalPath, destinationPath, size: number): Promise<string> {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
             // ffmpeg -i input.jpg -vf scale=320:240 output_320x240.png
             try {
-                var process = new ffmpeg(originalPath);
-                process.then(function (video) {
-                    console.log(video.metadata)
-                    if (video.metadata.video.rotate == 90) {
-                        if (video.metadata.video.resolution.w < size) {
-                            size = video.metadata.video.resolution.w
-                        }
-                        video
-                            .addCommand("-vf", "split[original][copy];[copy]scale=ih*16/9:-1,crop=h=iw*9/16,gblur=sigma=20[blurred];[blurred][original]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2")
 
-                        video
-                            .setVideoSize(size + "x?")
-                    } else {
-                        if (video.metadata.video.resolution.h < size) {
-                            size = video.metadata.video.resolution.h
-                        }
-                        video
-                            .setVideoSize(size + "x?", true, true)
-                    }
-                    video
-                        .save(destinationPath + ".jpg", (error, file) => {
-                            if (error) {
-                                return resolve(null)
-                            }
-                            console.log('ImageResize complete size->' + size);
-                            resolve(destinationPath + ".jpg")
-                        })
-                }, err => {
-                    resolve(null)
-                })
+                const image = await resizeImg(fs.readFileSync(originalPath), {
+                    width: size
+                });
+
+                fs.writeFileSync(destinationPath, image);
+                resolve(destinationPath + ".jpg")
+
+                // var process = new ffmpeg(originalPath);
+                // process.then(function (video) {
+                //     console.log(video.metadata)
+                //     if (video.metadata.video.rotate == 90) {
+                //         if (video.metadata.video.resolution.w < size) {
+                //             size = video.metadata.video.resolution.w
+                //         }
+                //         video
+                //             .addCommand("-vf", "split[original][copy];[copy]scale=ih*16/9:-1,crop=h=iw*9/16,gblur=sigma=20[blurred];[blurred][original]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2")
+
+                //         video
+                //             .setVideoSize(size + "x?")
+                //     } else {
+                //         if (video.metadata.video.resolution.h < size) {
+                //             size = video.metadata.video.resolution.h
+                //         }
+                //         video
+                //             .setVideoSize(size + "x?", true, true)
+                //     }
+                //     video
+                //         .save(destinationPath + ".jpg", (error, file) => {
+                //             if (error) {
+                //                 return resolve(null)
+                //             }
+                //             console.log('ImageResize complete size->' + size);
+                //             resolve(destinationPath + ".jpg")
+                //         })
+                // }, err => {
+                //     resolve(null)
+                // })
             } catch (e) {
                 console.log(e.code);
                 console.log(e.msg);

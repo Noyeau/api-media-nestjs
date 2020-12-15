@@ -24,7 +24,7 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api-docs', app, document);
 
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
