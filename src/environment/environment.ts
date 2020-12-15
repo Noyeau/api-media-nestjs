@@ -2,7 +2,7 @@
 
 export const environment: any = {
     production: true,
-    apiCode:"medias",
+    apiCode:"media",
     bddConfig: {
         type: 'mysql',
         host: 'localhost',
