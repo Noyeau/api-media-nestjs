@@ -195,7 +195,9 @@ export class FilesService {
             type: file.mimetype
         })
 
-        this.initialTranscodeUserFile(userFile)
+        setTimeout(()=>{
+            this.initialTranscodeUserFile(userFile)
+        },100)
         return userFile
     }
 
