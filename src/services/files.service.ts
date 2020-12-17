@@ -196,6 +196,7 @@ export class FilesService {
         })
 
         setTimeout(()=>{
+            console.log("test TRANSCODE VIDEO")
             this.initialTranscodeUserFile(userFile)
         },100)
         return userFile
@@ -209,8 +210,9 @@ export class FilesService {
 
         } else if (userFile.type.includes('video')) {
             await this.transcodeService.videoThum(this.getPath(userFile, "original"), this.getPath(userFile, "thum", false), 150)
-            await this.transcodeService.transcodeVideo(this.getPath(userFile, "original"), this.getPath(userFile, "hd", false), 720, this.getPath(userFile))
-            await this.transcodeService.transcodeVideo(this.getPath(userFile, "hd"), this.getPath(userFile, "sd", false), 360, this.getPath(userFile))
+            await this.transcodeService.transcodeVideo(this.getPath(userFile, "original"), this.getPath(userFile, "hd", false), 720)
+            await this.transcodeService.transcodeVideo(this.getPath(userFile, "hd"), this.getPath(userFile, "sd", false), 360)
+
         }
         await this.fileRepository.save(userFile)
     }

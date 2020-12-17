@@ -76,6 +76,8 @@ export class TranscodeService {
 
 
     videoThum(videoPath, thumPath, size: number = 150): Promise<string> {
+
+        console.log('-------------------Transcode videoThum -> ' + videoPath + ' -Size- ' + size);
         return new Promise((resolve) => {
             try {
                 var process = new ffmpeg(videoPath);
@@ -86,7 +88,7 @@ export class TranscodeService {
                             size = video.metadata.video.resolution.w
                         }
                         video
-                            .addCommand("-vf", "split[original][copy];[copy]scale=ih*16/9:-1,crop=h=iw*9/16,gblur=sigma=20[blurred];[blurred][original]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2")
+                            .addCommand("-vf", "'split[original][copy];[copy]scale=ih*16/9:-1,crop=h=iw*9/16,gblur=sigma=20[blurred];[blurred][original]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2'")
 
                         video
                             .setVideoSize(size + "x?")
@@ -105,14 +107,20 @@ export class TranscodeService {
                     video
                         .save(thumPath + ".jpg", (error, file) => {
                             if (error) {
+                                console.log('-------------------Plantage thum 000', error);
+
                                 return resolve(null)
                             }
                             resolve(thumPath + ".jpg")
                         })
                 }, err => {
+                    console.log('-------------------Plantage thum 1111');
+
                     resolve(null)
                 })
             } catch (e) {
+                console.log('-------------------Plantage thum 222');
+
                 console.log(e.code);
                 console.log(e.msg);
                 resolve(null)
@@ -124,7 +132,7 @@ export class TranscodeService {
     transcodeVideo(originalPath, destinationPath, size: number = 360, thumPath = null): Promise<string> {
 
 
-        console.log('-------------------Transcode -> '+ originalPath +' -Size- '+size);
+        console.log('-------------------Transcode -> ' + originalPath + ' -Size- ' + size);
 
         return new Promise((resolve) => {
             try {
@@ -139,13 +147,13 @@ export class TranscodeService {
                             size = video.metadata.video.resolution.w
                         }
                         video
-                            .addCommand("-vf", "split[original][copy];[copy]scale=ih*16/9:-1,crop=h=iw*9/16,gblur=sigma=20[blurred];[blurred][original]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2")
+                            .addCommand("-vf", "'split[original][copy];[copy]scale=ih*16/9:-1,crop=h=iw*9/16,gblur=sigma=20[blurred];[blurred][original]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2'")
                         video
                             .setVideoSize('?x' + size)
                         video
                             .save(destinationPath + '.mp4', (error, file) => {
                                 if (error) {
-                                    console.log(error)
+                                    console.log('-------------------Plantage 0', error);
                                     return resolve(null)
                                 }
                                 console.log('Video file: ' + file);
@@ -164,7 +172,7 @@ export class TranscodeService {
                         video
                             .save(destinationPath + '.mp4', (error, file) => {
                                 if (error) {
-                                    console.log(error)
+                                    console.log('-------------------Plantage 000', error);
                                     return resolve(null)
                                 }
                                 console.log('Video file: ' + file);
