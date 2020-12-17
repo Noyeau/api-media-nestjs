@@ -69,4 +69,18 @@ RUN node -v
 RUN npm -v
 WORKDIR /app
 COPY --from=builder /app ./
+
+EXPOSE 3000
+ENV PORT=3000
+ENV apiSystem=http://localhost
+ENV apiKeyCode=apiSecretKeyCode
+ENV dbType=mysql
+ENV dbHost=host
+ENV dbPort=port
+ENV dbUsername=root/user
+ENV dbPassword=password
+ENV dbDatabase=noyeau_media
+ENV dbEntities=dist/**/*.entity{.ts,.js}
+ENV dbSynchronize=true
+
 CMD ["npm", "run", "start:prod"]

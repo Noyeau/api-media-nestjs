@@ -33,9 +33,9 @@ async function bootstrap() {
     next();
   });
 
-  const configService: ConfigService = app.get(ConfigService);
-  await app.listen(await configService.getPort()).then((a) => {
-    console.log("api start on port : ", configService.thisApi.port)
+
+  await app.listen(await +process.env.PORT).then((a) => {
+    console.log("api MEDIA start on port : ", +process.env.PORT)
   });
 }
 bootstrap();

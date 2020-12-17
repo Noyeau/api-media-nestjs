@@ -2,17 +2,17 @@
 
 export const environment: any = {
     production: true,
-    apiCode:"media",
+    apiCode: "media",
     bddConfig: {
-        type: 'mysql',
-        host: '192.168.1.15',
-        port: 3306,
-        username: 'root',
-        password: 'NoyeauP@ssword',
-        database: 'noyeau_media',
-        entities: ["dist/**/*.entity{.ts,.js}"],
-        synchronize: true,
+        type: (process.env.dbType || 'mysql') as any,
+        host: process.env.dbHost || 'localhost',
+        port: +process.env.dbPort || 3306,
+        username: process.env.dbUsername || 'root',
+        password: process.env.dbPassword || '',
+        database: process.env.dbDatabase || 'noyeau_media',
+        entities: [process.env.dbEntities || "/**/*.entity{.ts,.js}"],
+        synchronize: (process.env.dbSynchronize == 'true' ? true : false) || false
     },
-    apiSystem:'http://192.168.1.15:1899',
-    apiKeyCode:'appNoyeau',
+    apiSystem: process.env.apiSystem || 'http://localhost:1899',
+    apiKeyCode: process.env.apiKeyCode || 'apiKeyCode',
 };

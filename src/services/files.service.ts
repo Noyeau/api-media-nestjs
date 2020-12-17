@@ -50,8 +50,12 @@ export class FilesService {
         return this.fileRepository.find({ where: { userId } })
     }
 
-    public async getOne(fileId, withToken = false): Promise<UserFile> {
+    public getOne(fileId): Promise<UserFile> {
         return this.fileRepository.findOne(fileId)
+    }
+
+    public getUserAvatarFile(userId){
+        return this.fileRepository.findOne({where:{userId, avatar:true}})
     }
 
 

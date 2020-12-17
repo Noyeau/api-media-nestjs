@@ -15,6 +15,31 @@ export class MediaController {
 
     }
 
+    @Get('user-avatar/:userId')
+    async getUserAvatar(@Req() req, @Res() res, @Param("userId") userId:number, @Query("size") size:string = "thum") {
+        let path = "public/api-files/private_image.jpg"
+        let type = "image/jpeg"
+        let userFile = await this.filesService.getUserAvatarFile(userId)
+        if (userFile) {
+            path = this.filesService.getPath(userFile, size)
+
+        }
+        sendImage()
+        return
+        function sendImage() {
+            fs.readFile(path, (err, content) => {
+                if (err) {
+                    path = "public/api-files/offline.jpg"
+                    sendImage()
+                } else {
+                    //specify the content type in the response will be an image
+                    res.writeHead(200, { 'Content-type': type });
+                    res.end(content);
+                }
+            });
+        }
+       
+    }
 
     /**
      * Permet de lire un fichier directement
@@ -89,9 +114,9 @@ export class MediaController {
 
             if (!fs.existsSync(path)) {
                 console.log('The path no-exists.');
-               
+
                 return res.status(404).send()
-              }
+            }
 
             const stat = fs.statSync(path)
             const fileSize = stat.size

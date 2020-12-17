@@ -4,6 +4,7 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    Unique,
 } from "typeorm";
 var fs = require('fs');
 
@@ -172,6 +173,9 @@ export class UserFile {
 
     @Column()
     path: string;
+
+    @Column({ default: false })
+    avatar: boolean;
 
     @Column({ default: false })
     public: boolean;

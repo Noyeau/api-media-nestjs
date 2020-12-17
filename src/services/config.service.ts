@@ -8,6 +8,10 @@ const request = require('request');
 export class ConfigService {
 
 
+    constructor() {
+        this.init()
+    }
+
     /**
      * Informations sur cette api (dont son environement dans thisApi.data :any[]) 
      */
@@ -26,13 +30,13 @@ export class ConfigService {
         if (this.apiList.length) {
             let api = this.apiList.find(el => el.code == codeApi)
             if (api) {
-                return environment.production ? api.serveur + ':' + api.port : "https://api.noyeau.io/gateway/"+api.code;
+                return  api.serveur + ':' + api.port;
             }
         }
         return '';
     }
 
-    async getPort(){
+    async getPort() {
         // while(!this.thisApi){
         //  console.log('test off');
         //     ;
@@ -41,8 +45,8 @@ export class ConfigService {
     }
 
 
-    async createTypeOrmOptions(){
-        if(!this.thisApi){
+    async createTypeOrmOptions() {
+        if (!this.thisApi) {
             await this.init()
         }
         return this.thisApi.data.bddConfig
@@ -59,70 +63,33 @@ export class ConfigService {
             /**
              * On récupère les data de l'api
              */
-            if (environment.production) {
-                request.get({
-                    url: environment.apiSystem + '/api/' + environment.apiCode,
-                    headers: {
-                        'Authorization': environment.apiKeyCode
+
+            request.get({
+                url: environment.apiSystem + '/api/' + environment.apiCode,
+                headers: {
+                    'Authorization': environment.apiKeyCode
+                }
+            }, async (error: any, response, body: any) => {
+
+                if (!error && response.statusCode == 200) {
+                    if (typeof body === "string") {
+                        body = JSON.parse(body)
                     }
-                }, async (error: any, response, body: any) => {
+                    console.log(body);
 
-                    if (!error && response.statusCode == 200) {
-                        if (typeof body === "string") {
-                            body = JSON.parse(body)
-                        }
-                        console.log(body);
-
-                        this.apiList = body.list
-                        this.thisApi = body.api
-
-                        console.log(this.thisApi.data.bddConfig);
-                        resolve(this.thisApi);
-                        return
-                    }
-                    console.log('Erreur recup CONFIG -> Vérifier API SYSTEM err=>' + body)
-                    reject(error)
+                    this.apiList = body.list
+                    this.thisApi = body.api
+                    resolve(this.thisApi);
                     return
+                }
+                console.log('Erreur recup CONFIG -> Vérifier API SYSTEM err=>' + body)
+                reject(error)
+                return
 
-                })
-            }
-            else {
-                request.get({
-                    url: 'https://api.noyeau.io/apiList',
-                    headers: {
-                        'Authorization': environment.apiKeyCode
-                    }
-                }, async (error: any, response, body: any) => {
+            })
 
-                    if (!error && response.statusCode == 200) {
-                        if (typeof body === "string") {
-                            body = JSON.parse(body)
-                        }
-                        console.log(body);
 
-                        this.apiList = body
-                        this.thisApi = {
-                            "label": "NOYEAU API Medias",
-                            "code": "medias",
-                            "description": "",
-                            "open": true,
-                            "activated": true,
-                            "serveur": "http://localhost",
-                            "port": 3001,
-                            "role": null,
-                            "repository": null,
-                            data: { bddConfig: environment.bddConfig }
-                        }
 
-                        resolve(this.thisApi);
-                        return
-                    }
-                    console.log('Erreur recup CONFIG -> Vérifier API SYSTEM err=>' + body)
-                    reject(error)
-                    return
-
-                })
-            }
 
 
 
@@ -130,6 +97,6 @@ export class ConfigService {
         })
     }
 
-   
+
 
 }
