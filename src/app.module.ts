@@ -14,39 +14,14 @@ import { AuthMiddleware } from './auth.middleware';
 import { TranscodeService } from './services/transcode.service';
 import { TokenService } from './services/token.service';
 import { ConfigService } from './services/config.service';
+import { environment } from './environment/environment';
 
-// const bddConfig={
-//   "type": process.env.dbType,
-//   "host": process.env.dbHost,
-//   "port": +process.env.dbPort,
-//   "username": process.env.dbUsername,
-//   "password": process.env.dbPassword,
-//   "database": process.env.dbDatabase,
-//   "entities": [
-//       process.env.dbEntities
-//   ],
-//   "synchronize": process.env.dbSynchronize == 'true' ? true : false
-// }
+
 
 @Module({
   imports: [
     HttpModule,
-    // TypeOrmModule.forRootAsync({
-    //   useClass: ConfigService,
-    // }),
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: process.env.dbType as any,
-        host: process.env.dbHost,
-        port: +process.env.dbPort,
-        username: process.env.dbUsername,
-        password: process.env.dbPassword,
-        database: process.env.dbDatabase,
-        entities: [process.env.dbEntities],
-        synchronize: process.env.dbSynchronize == 'true' ? true : false
-      }),
-    }),
-    //  TypeOrmModule.forRoot(bddConfig),
+    TypeOrmModule.forRoot(environment.bddConfig),
     TypeOrmModule.forFeature([UserFile, Profile])
 
   ],

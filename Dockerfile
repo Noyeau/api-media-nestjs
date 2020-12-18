@@ -65,8 +65,6 @@ RUN mkdir -p ~/ffmpeg_sources ~/bin && cd ~/ffmpeg_sources && \
     hash -r
 RUN mv ~/bin/ffmpeg /usr/local/bin && mv ~/bin/ffprobe /usr/local/bin && mv ~/bin/ffplay /usr/local/bin
 RUN apt-get install -y nodejs npm
-RUN node -v
-RUN npm -v
 WORKDIR /app
 COPY --from=builder /app ./
 
