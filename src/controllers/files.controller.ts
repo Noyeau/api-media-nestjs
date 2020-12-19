@@ -31,8 +31,8 @@ export class FilesController {
 
 
     @Get("multiples")
-    async getMultiples(@Res() res, @User() user, @Query('fileIds') fileIds, @ApiNoyeau() apiNoyeau) {
-        fileIds = fileIds.split(',')
+    async getMultiples(@Res() res, @User() user, @Query('fileIds') fileIdsOrigine:string, @ApiNoyeau() apiNoyeau) {
+        let fileIds:any[] = fileIdsOrigine.split(',')
         console.log('-----------------', fileIds)
 
         let files :any[] = await Promise.all(fileIds.map(async (fileId) => {
@@ -127,7 +127,7 @@ export class FilesController {
 
 
     @Get(":fileId")
-    async getOne(@Res() res, @User() user, @Param('fileId') fileId, @ApiNoyeau() apiNoyeau) {
+    async getOne(@Res() res, @User() user, @Param('fileId') fileId:number, @ApiNoyeau() apiNoyeau) {
 
         console.log("getOneFile=>"+fileId)
         let file;
@@ -149,6 +149,58 @@ export class FilesController {
                     //Si demandé par une api mais pas fichiers user on genere un token
                     if (apiNoyeau) {
                         file = this.tokenService.addTokenToUserFile([file], user.id)[0]
+                    }
+                    //Si pas propriétaire et pas demandé par API
+                    else {
+                        file = null
+                    }
+                }
+            }
+            //Sinon pas d'user
+            else {
+                file = null
+            }
+        }
+
+        if (file) {
+            return res.status(200).send(file)
+        }
+        return res.status(HttpStatus.UNAUTHORIZED).send({
+            "statusCode": 403,
+            "message": "Forbidden resource",
+            "error": "Forbidden"
+        })
+
+    }
+
+
+    @Get(":fileId/base64")
+    async getOneBase64(@Res() res, @User() user, @Param('fileId') fileId:number, @ApiNoyeau() apiNoyeau, @Query('force') force:string=null, @Query('size') size:string="thum") {
+
+        console.log("getOneFileBase64=>"+fileId, apiNoyeau)
+        let file;
+
+        file = await this.filesService.getOne(fileId);
+
+
+        if(!file){
+            return null
+        }
+
+        if(apiNoyeau && force){
+            console.log("forceOK")
+            file['base64']=this.filesService.getFileBase64(file, size)
+        }
+        //Si nonPublic
+        else if (!file.public) {
+            //Si User enregistré
+            if (user && user.id) {
+                //Si Pas Propriétaire du fichier
+                if (user.id != file.userId) {
+                    console.log('pas afficher')
+                    //Si demandé par une api mais pas fichiers user on genere un token
+                    if (apiNoyeau) {
+                        file['base64']=this.filesService.getFileBase64(file, size)
                     }
                     //Si pas propriétaire et pas demandé par API
                     else {

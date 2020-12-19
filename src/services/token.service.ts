@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UserFile } from 'src/entities/userFile.entity';
+import { environment } from 'src/environment/environment';
 const jwt = require('jsonwebtoken');
 
-const tokenSecret = "monSecretTokenMedia"
+const tokenSecret = environment.tokenSecret
+const tokenTime = environment.tokenTime
 
 @Injectable()
 export class TokenService {
@@ -25,7 +27,7 @@ export class TokenService {
 
     genereToken(userId, fileId):string {
         return jwt.sign({ userId, fileId }, tokenSecret, {
-            expiresIn: 300 // expires in 5 mins
+            expiresIn: environment.tokenTime // expires in 5 mins
         });
     }
 

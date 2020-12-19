@@ -12,8 +12,6 @@ export class AuthMiddleware implements NestMiddleware {
     req.user = null
     req.apiNoyeau = null
 
-    console.log("query",req.query);
-    
     if (req.query.userToken) {
       token = req.query.userToken
     }

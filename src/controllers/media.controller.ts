@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { FilesService } from 'src/services/files.service';
 import { User } from 'src/decorators/user.decorator';
 import { TokenService } from 'src/services/token.service';
+import { ApiNoyeau } from 'src/decorators/apiNoyeau.decorator';
 const fs = require('fs');
 const _path = require('path');
 
@@ -16,7 +17,7 @@ export class MediaController {
     }
 
     @Get('user-avatar/:userId')
-    async getUserAvatar(@Req() req, @Res() res, @Param("userId") userId:number, @Query("size") size:string = "thum") {
+    async getUserAvatar(@Req() req, @Res() res, @Param("userId") userId: number, @Query("size") size: string = "thum") {
         let path = "public/api-files/private_image.jpg"
         let type = "image/jpeg"
         let userFile = await this.filesService.getUserAvatarFile(userId)
@@ -38,7 +39,7 @@ export class MediaController {
                 }
             });
         }
-       
+
     }
 
     /**
@@ -46,7 +47,7 @@ export class MediaController {
      * @param fileId Id du fichier à lire
      */
     @Get(':fileId')
-    async getMediaStream(@Req() req, @Res() res, @Param("fileId") fileId, @Query("token") token, @Query("size") size = "sd", @User() user) {
+    async getMediaStream(@Req() req, @Res() res, @Param("fileId") fileId:number, @Query("token") token=null, @Query("size") size:string = "sd", @User() user, @ApiNoyeau() apiNoyeau, @Query("force") force=null) {
         console.log(fileId, size)
         let path = "public/api-files/private_image.jpg"
         let type = "image/jpeg"
@@ -56,7 +57,12 @@ export class MediaController {
 
         if (userFile) {
 
-            if (userFile.public) {
+
+            if (apiNoyeau && force) {
+                path = this.filesService.getPath(userFile, size)
+                type = userFile.type
+            }
+            else if (userFile.public) {
                 //Si public on affiche tjr le media
                 path = this.filesService.getPath(userFile, size)
                 type = userFile.type
@@ -151,7 +157,7 @@ export class MediaController {
     }
 
     @Get(':fileId/download')
-    async getMediaDownload(@Req() req, @Res() res, @Param("fileId") fileId, @Query("token") token, @Query("size") size = "sd", @User() user) {
+    async getMediaDownload(@Req() req, @Res() res, @Param("fileId") fileId:number, @Query("token") token:string, @Query("size") size:string = "sd", @User() user) {
         console.log(fileId, size)
         let path = null
 

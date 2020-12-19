@@ -168,7 +168,17 @@ export class FilesService {
 
     }
 
+    getFileBase64(userFile:UserFile, size:string='thum'){
+        console.log(userFile.id, size)
+        return this.getbase64(this.getPath(userFile, size))
+    }
 
+    getbase64(path){
+        let bitmap = fs.readFileSync(path);
+        console.log(bitmap)
+        // convert binary data to base64 encoded string
+        return new Buffer(bitmap).toString('base64');
+    }
 
 
 
